@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Form</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-container {
+            background-color: #fff;
+            width: 100%;
+            max-width: 800px;
+            padding: 30px 40px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            font-size: 15px;
+            color: #000;
+            border-bottom: 1px solid #000;
+            padding-bottom: 5px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: flex-start;
+        }
+
+        .label {
+            width: 180px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #333;
+            padding-top: 4px;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .static-text {
+            font-size: 13px;
+            color: #000;
+            padding-top: 4px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            max-width: 450px;
+            padding: 4px 6px;
+            border: 1px solid #a9a9a9;
+            font-size: 13px;
+        }
+
+        input[type="text"].short-input {
+            max-width: 150px;
+        }
+
+        select {
+            padding: 3px;
+            border: 1px solid #a9a9a9;
+            font-size: 13px;
+            min-width: 120px;
+        }
+
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .radio-item, .checkbox-item {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            color: #000;
+        }
+
+        .radio-item input, .checkbox-item input {
+            margin-right: 5px;
+        }
+
+        .wysiwyg-editor {
+            border: 1px solid #a9a9a9;
+            max-width: 550px;
+            width: 100%;
+        }
+
+        .wysiwyg-toolbar {
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #a9a9a9;
+            padding: 5px;
+            display: flex;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #555;
+            align-items: center;
+        }
+
+        .wysiwyg-toolbar span {
+            cursor: pointer;
+            padding: 0 4px;
+        }
+
+        .wysiwyg-toolbar span:hover {
+            background-color: #ddd;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            border: none;
+            padding: 10px;
+            font-size: 13px;
+            resize: none;
+            outline: none;
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        .captcha-area {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .captcha-image {
+            font-family: monospace;
+            font-size: 28px;
+            letter-spacing: 5px;
+            color: #555;
+            margin-bottom: 5px;
+            border: 1px dotted #ccc;
+            padding: 5px 10px;
+            background: #fafafa;
+        }
+
+        .captcha-link {
+            font-size: 11px;
+            color: #000;
+            text-decoration: none;
+            margin-bottom: 5px;
+            margin-left: 150px;
+        }
+
+        .captcha-link:hover {
+            text-decoration: underline;
+        }
+
+        .footer-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 30px;
+            border-top: 1px solid #ccc;
+            padding-top: 15px;
+        }
+
+        .left-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .arrows {
+            display: flex;
+            gap: 5px;
+        }
+
+        .arrow-btn {
+            background-color: #555;
+            color: #fff;
+            border: none;
+            padding: 3px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .required-text {
+            font-size: 12px;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .right-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background-color: #444;
+            color: #fff;
+            border: none;
+            padding: 6px 15px;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-btn:hover {
+            background-color: #333;
+        }
+
+        input::placeholder {
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Basic Info</h2>
+    
+    <div class="form-row">
+        <div class="label">Employee ID</div>
+        <div class="input-wrapper">
+            <span class="static-text">9</span>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">Last Name</div>
+        <div class="input-wrapper">
+            <span class="static-text">Dodsworth</span>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">First Name</div>
+        <div class="input-wrapper">
+            <input type="text" value="Anne">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">Gender</div>
+        <div class="input-wrapper radio-group">
+            <label class="radio-item"><input type="radio" name="gender"> Male</label>
+            <label class="radio-item"><input type="radio" name="gender"> Female</label>
+            <label class="radio-item"><input type="radio" name="gender"> XXX</label>
+            <label class="radio-item"><input type="radio" name="gender" checked> ZZZ</label>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">Title</div>
+        <div class="input-wrapper">
+            <input type="text" value="Sales Representative">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">Suffix</div>
+        <div class="input-wrapper">
+            <input type="text" value="Ms.">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">BirthDate</div>
+        <div class="input-wrapper">
+            <input type="text" value="1969-07-02 00:00:00">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">HireDate</div>
+        <div class="input-wrapper">
+            <input type="text" value="1994-11-15 00:00:00">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">SSN # (if applicable)</div>
+        <div class="input-wrapper">
+            <input type="text">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">Reports To</div>
+        <div class="input-wrapper">
+            <select>
+                <option>Buchanan</option>
+            </select>
+        </div>
+    </div>
+
+    <h2>Contact Info</h2>
+
+    <div class="form-row">
+        <div class="label">Email</div>
+        <div class="input-wrapper">
+            <input type="text" placeholder="name@example.com">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">Address</div>
+        <div class="input-wrapper">
+            <input type="text" value="7 Houndstooth Rd.">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">City</div>
+        <div class="input-wrapper">
+            <input type="text" value="London">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">Region</div>
+        <div class="input-wrapper">
+            <input type="text">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">Postal Code</div>
+        <div class="input-wrapper">
+            <input type="text" value="WG2 7LT">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">Country</div>
+        <div class="input-wrapper">
+            <select>
+                <option>Russian Federation</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">US Home Phone</div>
+        <div class="input-wrapper">
+            <input type="text" value="(234)234-2342">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">Photo</div>
+        <div class="input-wrapper">
+            <input type="text" value="EmpID9.bmp">
+        </div>
+    </div>
+
+    <h2>Optional Info</h2>
+
+    <div class="form-row">
+        <div class="label">Notes</div>
+        <div class="input-wrapper">
+            <div class="wysiwyg-editor">
+                <div class="wysiwyg-toolbar">
+                    <span><b>B</b></span>
+                    <span><i>I</i></span>
+                    <span><s>S</s></span>
+                    <span><u>U</u></span>
+                    <span>|</span>
+                    <span>≡</span>
+                    <span>≡</span>
+                    <span>≡</span>
+                    <span>|</span>
+                    <span>H1</span>
+                    <span>H2</span>
+                    <span>H3</span>
+                    <span style="color:red;">✘</span>
+                </div>
+                <textarea>Anne has a BA degree in English from St. Lawrence College. She is fluent in French and German.ZZZ</textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">Preferred Shift</div>
+        <div class="input-wrapper checkbox-group">
+            <label class="checkbox-item"><input type="checkbox"> Regular</label>
+            <label class="checkbox-item"><input type="checkbox" checked> Gravy Yard</label>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">Active?</div>
+        <div class="input-wrapper">
+            <input type="checkbox" checked>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="label">Are you human?</div>
+        <div class="input-wrapper captcha-area">
+            <div class="captcha-image">TIDAWO</div>
+            <a href="#" class="captcha-link">Click to change</a>
+            <input type="text">
+        </div>
+    </div>
+
+    <div class="footer-controls">
+        <div class="left-controls">
+            <div class="arrows">
+                <button class="arrow-btn">◄</button>
+                <button class="arrow-btn">►</button>
+            </div>
+            <span class="required-text">* required</span>
+        </div>
+        <div class="right-controls">
+            <button class="action-btn">🖫 Submit</button>
+            <button class="action-btn">✖ Cancel</button>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
