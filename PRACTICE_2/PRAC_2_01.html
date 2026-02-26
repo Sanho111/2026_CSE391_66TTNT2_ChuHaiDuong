@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form Flexbox</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            padding: 40px;
+            background-color: #f9f9f9;
+        }
+
+        .form-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #333;
+            padding: 30px;
+            background-color: #fff;
+        }
+
+        .form-title {
+            color: #444;
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 2px;
+            font-size: 14px;
+            color: #333;
+            outline: none;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #aaa;
+        }
+
+        textarea {
+            height: 200px;
+            resize: vertical;
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .flex-row input {
+            flex: 1;
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .submit-btn {
+            background-color: #72c3fc;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #58b2f0;
+        }
+
+        .form-note {
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-wrapper">
+    <h3 class="form-title">Get in touch with us by filling contact form below</h3>
+    
+    <form action="#">
+        <div class="form-group flex-row">
+            <input type="text" placeholder="* Enter your full name" required>
+            <input type="email" placeholder="* Enter your email address" required>
+        </div>
+
+        <div class="form-group">
+            <input type="text" placeholder="Enter your subject">
+        </div>
+
+        <div class="form-group">
+            <textarea placeholder="* Your message here..." required></textarea>
+        </div>
+
+        <div class="form-footer">
+            <button type="submit" class="submit-btn">Send message</button>
+            <span class="form-note">* Please fill all required form field, thanks!</span>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
