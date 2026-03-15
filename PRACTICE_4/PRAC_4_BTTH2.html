@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Multi-step Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: auto; }
+        .step { display: none; }
+        .step.active { display: block; }
+        .progress-container { display: flex; margin-bottom: 20px; gap: 5px; }
+        .progress-bar { flex: 1; height: 10px; background-color: #eee; border-radius: 5px; transition: 0.3s; }
+        .progress-bar.active { background-color: blue; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], input[type="date"], input[type="email"], input[type="password"] {
+            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
+        }
+        .btn-group { display: flex; justify-content: space-between; margin-top: 20px; }
+        button { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; color: white; background-color: blue; }
+        button.btn-back { background-color: gray; }
+        .error-msg { color: red; font-size: 13px; display: block; min-height: 15px; }
+        .summary p { margin: 5px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <h2>Đăng Ký Dịch Vụ</h2>
+    
+    <div class="progress-container">
+        <div class="progress-bar active" id="prog1"></div>
+        <div class="progress-bar" id="prog2"></div>
+        <div class="progress-bar" id="prog3"></div>
+    </div>
+
+    <form id="multiForm">
+        
+        <div id="step1" class="step active">
+            <h3>Bước 1: Thông tin cá nhân</h3>
+            <div class="form-group">
+                <label>Họ và tên:</label>
+                <input type="text" id="fullname">
+                <span class="error-msg" id="err-fullname"></span>
+            </div>
+            <div class="form-group">
+                <label>Ngày sinh:</label>
+                <input type="date" id="dob">
+                <span class="error-msg" id="err-dob"></span>
+            </div>
+            <div class="form-group">
+                <label>Giới tính:</label>
+                <input type="radio" name="gender" value="Nam"> Nam
+                <input type="radio" name="gender" value="Nữ"> Nữ
+                <span class="error-msg" id="err-gender"></span>
+            </div>
+            <div class="btn-group">
+                <div></div>
+                <button type="button" id="btnNext1">Tiếp theo</button>
+            </div>
+        </div>
+
+        <div id="step2" class="step">
+            <h3>Bước 2: Thông tin tài khoản</h3>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="email">
+                <span class="error-msg" id="err-email"></span>
+            </div>
+            <div class="form-group">
+                <label>Mật khẩu:</label>
+                <input type="password" id="password">
+                <span class="error-msg" id="err-password"></span>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn-back" id="btnBack1">Quay lại</button>
+                <button type="button" id="btnNext2">Tiếp theo</button>
+            </div>
+        </div>
+
+        <div id="step3" class="step">
+            <h3>Bước 3: Xác nhận thông tin</h3>
+            <div class="summary">
+                <p><strong>Họ tên:</strong> <span id="sum-fullname"></span></p>
+                <p><strong>Ngày sinh:</strong> <span id="sum-dob"></span></p>
+                <p><strong>Giới tính:</strong> <span id="sum-gender"></span></p>
+                <p><strong>Email:</strong> <span id="sum-email"></span></p>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn-back" id="btnBack2">Quay lại</button>
+                <button type="submit" id="btnSubmit">Hoàn tất</button>
+            </div>
+        </div>
+
+    </form>
+
+    <script>
+        function resetErrors(stepNum) {
+            if (stepNum === 1) {
+                document.getElementById('err-fullname').innerText = "";
+                document.getElementById('err-dob').innerText = "";
+                document.getElementById('err-gender').innerText = "";
+            } else if (stepNum === 2) {
+                document.getElementById('err-email').innerText = "";
+                document.getElementById('err-password').innerText = "";
+            }
+        }
+
+        document.getElementById('btnNext1').onclick = function() {
+            resetErrors(1);
+            let valid = true;
+            
+            let name = document.getElementById('fullname').value.trim();
+            if (name === "") {
+                document.getElementById('err-fullname').innerText = "Vui lòng nhập họ tên";
+                valid = false;
+            }
+
+            let dob = document.getElementById('dob').value;
+            if (dob === "") {
+                document.getElementById('err-dob').innerText = "Vui lòng chọn ngày sinh";
+                valid = false;
+            }
+
+            let genderChecked = document.querySelector('input[name="gender"]:checked');
+            if (!genderChecked) {
+                document.getElementById('err-gender').innerText = "Vui lòng chọn giới tính";
+                valid = false;
+            }
+
+            if (valid) {
+                document.getElementById('step1').classList.remove('active');
+                document.getElementById('step2').classList.add('active');
+                document.getElementById('prog2').classList.add('active');
+            }
+        };
+
+        document.getElementById('btnBack1').onclick = function() {
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step1').classList.add('active');
+            document.getElementById('prog2').classList.remove('active');
+        };
+
+        document.getElementById('btnNext2').onclick = function() {
+            resetErrors(2);
+            let valid = true;
+
+            let email = document.getElementById('email').value.trim();
+            if (email === "") {
+                document.getElementById('err-email').innerText = "Vui lòng nhập email";
+                valid = false;
+            }
+
+            let pw = document.getElementById('password').value;
+            if (pw === "") {
+                document.getElementById('err-password').innerText = "Vui lòng nhập mật khẩu";
+                valid = false;
+            }
+
+            if (valid) {
+                document.getElementById('step2').classList.remove('active');
+                document.getElementById('step3').classList.add('active');
+                document.getElementById('prog3').classList.add('active');
+
+                document.getElementById('sum-fullname').innerText = document.getElementById('fullname').value;
+                document.getElementById('sum-dob').innerText = document.getElementById('dob').value;
+                document.getElementById('sum-gender').innerText = document.querySelector('input[name="gender"]:checked').value;
+                document.getElementById('sum-email').innerText = document.getElementById('email').value;
+            }
+        };
+
+        document.getElementById('btnBack2').onclick = function() {
+            document.getElementById('step3').classList.remove('active');
+            document.getElementById('step2').classList.add('active');
+            document.getElementById('prog3').classList.remove('active');
+        };
+
+        document.getElementById('multiForm').onsubmit = function(event) {
+            event.preventDefault();
+            alert("Đăng ký hoàn tất thành công!");
+        };
+    </script>
+</body>
+</html>

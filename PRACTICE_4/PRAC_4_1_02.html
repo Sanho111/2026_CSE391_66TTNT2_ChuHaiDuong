@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quan ly diem nang cao</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .input-group, .filter-group { margin-bottom: 15px; }
+        .filter-group input, .filter-group select { padding: 5px; margin-right: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: center; }
+        th { background-color: #f4f4f4; }
+        .kem { background-color: yellow; }
+        .btnXoa { background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer; }
+        .sortable { cursor: pointer; user-select: none; }
+        .sortable:hover { background-color: #ddd; }
+    </style>
+</head>
+<body>
+    <h2>Bảng Điểm Sinh Viên - Nâng Cao</h2>
+
+    <div class="input-group">
+        <input type="text" id="hoTen" placeholder="Họ và Tên">
+        <input type="number" id="diem" placeholder="Điểm (0-10)" min="0" max="10">
+        <button id="btnThem">Thêm</button>
+    </div>
+
+    <div class="filter-group">
+        <input type="text" id="timKiem" placeholder="Tìm kiếm theo tên...">
+        <select id="locXepLoai">
+            <option value="Tất cả">Tất cả</option>
+            <option value="Giỏi">Giỏi</option>
+            <option value="Khá">Khá</option>
+            <option value="Trung Bình">Trung Bình</option>
+            <option value="Yếu">Yếu</option>
+        </select>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Họ tên</th>
+                <th class="sortable" id="cotDiem">Điểm <span id="muiTenSapXep"></span></th>
+                <th>Xếp loại</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody id="danhSach"></tbody>
+    </table>
+
+    <p>Tổng SV hiển thị: <strong id="tongSV">0</strong> | Điểm TB: <strong id="dtb">0</strong></p>
+
+    <script>
+        let danhSachSV = [];
+        let danhSachLoc = [];
+        let chieuSapXep = 0;
+
+        document.getElementById('btnThem').onclick = function() {
+            let ten = document.getElementById('hoTen').value.trim();
+            let diemStr = document.getElementById('diem').value;
+            let diem = parseFloat(diemStr);
+
+            if(ten === "" || diemStr === "" || diem < 0 || diem > 10) {
+                alert("Vui lòng nhập tên và điểm hợp lệ từ 0 đến 10!");
+                return;
+            }
+            
+            let xeploai = "";
+            if (diem >= 8.5) xeploai = "Giỏi";
+            else if (diem >= 7.0) xeploai = "Khá";
+            else if (diem >= 5.0) xeploai = "Trung Bình";
+            else xeploai = "Yếu";
+
+            let idDocNhat = Date.now();
+            danhSachSV.push({ idGoc: idDocNhat, ten: ten, diem: diem, xepLoai: xeploai });
+
+            document.getElementById('hoTen').value = "";
+            document.getElementById('diem').value = "";
+            document.getElementById('hoTen').focus();
+
+            locDuLieu();
+        };
+
+        document.getElementById('timKiem').oninput = locDuLieu;
+        document.getElementById('locXepLoai').onchange = locDuLieu;
+
+        document.getElementById('cotDiem').onclick = function() {
+            if (chieuSapXep === 0 || chieuSapXep === -1) {
+                chieuSapXep = 1;
+                document.getElementById('muiTenSapXep').innerText = "▲";
+            } else {
+                chieuSapXep = -1;
+                document.getElementById('muiTenSapXep').innerText = "▼";
+            }
+            locDuLieu();
+        };
+
+        function locDuLieu() {
+            let tuKhoa = document.getElementById('timKiem').value.toLowerCase().trim();
+            let xepLoaiChon = document.getElementById('locXepLoai').value;
+
+            danhSachLoc = danhSachSV.filter(function(sv) {
+                let thoaManTen = sv.ten.toLowerCase().includes(tuKhoa);
+                let thoaManXepLoai = (xepLoaiChon === "Tất cả") || (sv.xepLoai === xepLoaiChon);
+                return thoaManTen && thoaManXepLoai;
+            });
+
+            if (chieuSapXep === 1) {
+                danhSachLoc.sort(function(a, b) { return a.diem - b.diem; });
+            } else if (chieuSapXep === -1) {
+                danhSachLoc.sort(function(a, b) { return b.diem - a.diem; });
+            }
+
+            veLaiBang();
+        }
+
+        function veLaiBang() {
+            let tbody = document.getElementById('danhSach');
+            tbody.innerHTML = "";
+            let tongDiem = 0;
+
+            if (danhSachLoc.length === 0 && danhSachSV.length > 0) {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="5">Không có kết quả</td>`;
+                tbody.appendChild(tr);
+                document.getElementById('tongSV').innerText = "0";
+                document.getElementById('dtb').innerText = "0";
+                return;
+            }
+
+            for(let i = 0; i < danhSachLoc.length; i++) {
+                let sv = danhSachLoc[i];
+                tongDiem += sv.diem;
+
+                let tr = document.createElement('tr');
+                if (sv.diem < 5.0) {
+                    tr.className = "kem";
+                }
+                tr.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>${sv.ten}</td>
+                    <td>${sv.diem}</td>
+                    <td>${sv.xepLoai}</td>
+                    <td><button class="btnXoa" data-idgoc="${sv.idGoc}">Xóa</button></td>
+                `;
+                tbody.appendChild(tr);
+            }
+            
+            document.getElementById('tongSV').innerText = danhSachLoc.length;
+            
+            if (danhSachLoc.length > 0) {
+                let diemTrungBinh = tongDiem / danhSachLoc.length;
+                document.getElementById('dtb').innerText = diemTrungBinh.toFixed(2);
+            } else {
+                document.getElementById('dtb').innerText = "0";
+            }
+        }
+
+        document.getElementById('danhSach').onclick = function(event) {
+            if (event.target.classList.contains('btnXoa')) {
+                let idCanXoa = event.target.getAttribute('data-idgoc');
+                
+                for (let i = 0; i < danhSachSV.length; i++) {
+                    if (danhSachSV[i].idGoc == idCanXoa) {
+                        danhSachSV.splice(i, 1);
+                        break;
+                    }
+                }
+                locDuLieu();
+            }
+        };
+
+        document.getElementById('diem').onkeyup = function(event) {
+            if (event.key === "Enter") {
+                document.getElementById('btnThem').click();
+            }
+        }; 
+    </script>
+</body>
+</html>

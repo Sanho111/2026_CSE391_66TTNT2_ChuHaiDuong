@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quan ly diem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .kem {
+            background-color: yellow;
+        }
+        .btnXoa {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Bảng Điểm Sinh Viên</h2>
+
+    <div class="input-group">
+        <input type="text" id="hoTen" placeholder="Họ và Tên">
+        <input type="number" id="diem" placeholder="Điểm (0-10)" min="0" max="10">
+        <button id="btnThem">Thêm</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Họ tên</th>
+                <th>Điểm</th>
+                <th>Xếp loại</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody id="danhSach"></tbody>
+    </table>
+
+    <p>Tổng SV: <strong id="tongSV">0</strong> | Điểm TB: <strong id="dtb">0</strong></p>
+
+    <script>
+        let danhSachSV = [];
+
+        document.getElementById('btnThem').onclick = function() {
+            let ten = document.getElementById('hoTen').value.trim();
+            let diemStr = document.getElementById('diem').value;
+            let diem = parseFloat(diemStr);
+
+            if(ten === "" || diemStr === "" || diem < 0 || diem > 10) {
+                alert("Vui lòng nhập tên và điểm hợp lệ từ 0 đến 10!");
+                return;
+            }
+            let xeploai = "";
+            if (diem >=8.5) xeploai = "Giỏi";
+            else if (diem >= 7.0) xeploai = "Khá";
+            else if (diem >= 5.0) xeploai = "Trung Bình";
+            else xeploai = "Yếu";
+
+            danhSachSV.push({ ten: ten, diem: diem, xeploai: xeploai});
+
+            document.getElementById('hoTen').value = "";
+            document.getElementById('diem').value = "";
+            document.getElementById('hoTen').focus();
+
+            veLaiBang();
+        };
+    
+    function veLaiBang() {
+        let tbody = document.getElementById('danhSach');
+        tbody.innerHTML = "";
+        let tongDiem = 0;
+
+        for(let i = 0; i < danhSachSV.length; i++) {
+            let sv = danhSachSV[i];
+            tongDiem += sv.diem;
+
+            let tr = document.createElement('tr');
+            if (sv.diem < 5.0) {
+                tr.className = "kem";
+            }
+            tr.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>${sv.ten}</td>
+                    <td>${sv.diem}</td>
+                    <td>${sv.xeploai}</td>
+                    <td><button class="btnXoa" data-index="${i}">Xóa</button></td>
+                `;
+            tbody.appendChild(tr);
+        }
+        document.getElementById('tongSV').innerText = danhSachSV.length;
+            
+            if (danhSachSV.length > 0) {
+                let diemTrungBinh = tongDiem / danhSachSV.length;
+                document.getElementById('dtb').innerText = diemTrungBinh.toFixed(2);
+            } else {
+                document.getElementById('dtb').innerText = "0";
+            }
+        }
+
+        document.getElementById('danhSach').onclick = function(event) {
+            if (event.target.classList.contains('btnXoa')) {
+                let index = event.target.getAttribute('data-index');
+                danhSachSV.splice(index, 1);
+                veLaiBang();
+            }
+        };
+
+        document.getElementById('diem').onkeyup = function(event) {
+            if (event.key === "Enter") {
+                document.getElementById('btnThem').click();
+            }
+    }; 
+    </script>
+
+
+</body>
+</html>

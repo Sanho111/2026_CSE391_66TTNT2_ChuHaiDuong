@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Nang cap Form Dang Ky</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: auto; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], input[type="password"] {
+            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
+        }
+        .name-header { display: flex; justify-content: space-between; align-items: flex-end; }
+        .char-count { font-size: 12px; color: gray; }
+        .pw-wrapper { position: relative; }
+        .toggle-pw { position: absolute; right: 10px; top: 8px; cursor: pointer; user-select: none; }
+        .strength-bar { height: 5px; width: 0%; transition: 0.3s; margin-top: 5px; border-radius: 3px; }
+        .weak { background-color: red; width: 33%; }
+        .medium { background-color: orange; width: 66%; }
+        .strong { background-color: green; width: 100%; }
+        .strength-text { font-size: 12px; margin-top: 5px; display: block; }
+    </style>
+</head>
+<body>
+    <h2>Đăng Ký Tài Khoản (Nâng Cấp)</h2>
+    <form id="upgradeForm">
+        
+        <div class="form-group">
+            <div class="name-header">
+                <label>Họ và tên:</label>
+                <span id="nameCount" class="char-count">0/50</span>
+            </div>
+            <input type="text" id="fullname" maxlength="50">
+        </div>
+
+        <div class="form-group">
+            <label>Mật khẩu:</label>
+            <div class="pw-wrapper">
+                <input type="password" id="password">
+                <span class="toggle-pw" id="togglePw">👁️</span>
+            </div>
+            <div id="strengthBar" class="strength-bar"></div>
+            <span id="strengthText" class="strength-text"></span>
+        </div>
+
+    </form>
+
+    <script>
+        document.getElementById('fullname').oninput = function() {
+            let len = this.value.length;
+            document.getElementById('nameCount').innerText = len + "/50";
+        };
+
+        document.getElementById('togglePw').onclick = function() {
+            let pwInput = document.getElementById('password');
+            if (pwInput.type === "password") {
+                pwInput.type = "text";
+                this.innerText = "🙈";
+            } else {
+                pwInput.type = "password";
+                this.innerText = "👁️";
+            }
+        };
+
+        document.getElementById('password').oninput = function() {
+            let val = this.value;
+            let bar = document.getElementById('strengthBar');
+            let text = document.getElementById('strengthText');
+            
+            bar.className = "strength-bar";
+            text.innerText = "";
+            text.style.color = "black";
+
+            if (val.length === 0) return;
+
+            let strength = 0;
+            if (val.length >= 8) strength++;
+            if (/[A-Z]/.test(val)) strength++;
+            if (/[0-9]/.test(val)) strength++;
+            if (/[^a-zA-Z0-9]/.test(val)) strength++;
+
+            if (strength <= 2) {
+                bar.classList.add("weak");
+                text.innerText = "Yếu";
+                text.style.color = "red";
+            } else if (strength === 3) {
+                bar.classList.add("medium");
+                text.innerText = "Trung bình";
+                text.style.color = "orange";
+            } else {
+                bar.classList.add("strong");
+                text.innerText = "Mạnh";
+                text.style.color = "green";
+            }
+        };
+    </script>
+</body>
+</html>
